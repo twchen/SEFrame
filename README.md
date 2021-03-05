@@ -23,7 +23,7 @@ This repository contains the code for the paper "An Efficient and Effective Fram
    - Delicious: `user_taggedbookmarks-timestamps.dat` and `user_contacts-timestamps.dat`
    - Foursquare: `dataset_WWW_Checkins_anonymized.txt` and `dataset_WWW_friendship_new.txt`
 
-4. Preprocess the datasets using the Python script `preprocess.py`.  
+4. Preprocess the datasets using the Python script [preprocess.py](preprocess.py).  
    For example, to preprocess the *Gowalla* dataset, run the following command:
    ```bash
    python preprocess.py --dataset gowalla
@@ -36,13 +36,13 @@ This repository contains the code for the paper "An Efficient and Effective Fram
    python preprocess.py -h
    ```
 
-5. Train and evaluate a model using the Python script `run.py`.  
+5. Train and evaluate a model using the Python script [run.py](run.py).  
    For example, to train and evaluate the model NARM on the *Gowalla* dataset, run the following command:
    ```bash
    python run.py --model NARM --dataset-dir datasets/gowalla
    ```
    Other available models are NextItNet, STAMP, SRGNN, SSRM, SNARM, SNextItNet, SSTAMP, SSRGNN, SSSRM, DGRec, and SERec.  
-   You can also see all the availabel models in the `srs/models` folder.
+   You can also see all the available models in the [srs/models](srs/models) folder.
 
    To see the detailed usage of `run.py`, run the following command:
    ```bash
@@ -60,6 +60,7 @@ You can train the models using your datasets. Each dataset should contain the fo
 
 - `edges.txt`: A TSV file containing the relations in the social network. It has two columns, `follower` and `followee`. Both columns contain the user IDs.
 
+You can see [datasets/delicious](datasets/delicious) for an example of the dataset.
 
 ## Citation
 If you use this code for your research, please cite our paper:
