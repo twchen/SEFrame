@@ -1,0 +1,2 @@
+num_users	num_items	max_len
+1313	5793	50
