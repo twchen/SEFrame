@@ -10,7 +10,7 @@ parser.add_argument(
     '--embedding-dim', type=int, default=128, help='the dimensionality of embeddings'
 )
 parser.add_argument(
-    '--feat-drop', type=float, default=0.0, help='the dropout ratio for input features'
+    '--feat-drop', type=float, default=0.2, help='the dropout ratio for input features'
 )
 parser.add_argument(
     '--num-layers',
@@ -46,12 +46,12 @@ parser.add_argument(
 parser.add_argument(
     '--patience',
     type=int,
-    default=1,
+    default=2,
     help='stop training if the performance does not improve in this number of consecutive epochs',
 )
 parser.add_argument(
     '--Ks',
-    default='5,10,20',
+    default='10,20',
     help='the values of K in evaluation metrics, separated by commas'
 )
 parser.add_argument(
