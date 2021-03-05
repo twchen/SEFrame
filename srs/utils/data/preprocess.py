@@ -1,5 +1,4 @@
 import numpy as np
-import pandas as pd
 
 
 def group_sessions(df, interval):
@@ -75,42 +74,39 @@ def truncate_long_sessions(df, max_len, is_sorted=False):
     return df_t
 
 
-def update_id(*dataframes, colname, alias=None):
+def update_id(*dataframes, colnames, mapping=None):
     """
-    Map the values in the columns `colname` and `alias` of dataframes to integer IDs.
-
-    Assume the column `colname` in the first dataframe contains all the values in all dataframes.
-    If there are values in other dataframes that do not appear in the first dataframe,
-    the values are mapped to NaN.
+    Map the values in the columns `colnames` of `dataframes` according to `mapping`.
+    If `mapping` is `None`, a dictionary that maps the values in column `colnames[0]`
+    of `dataframes[0]` to unique integers will be used.
+    Note that values not appear in `mapping` will be mapped to `NaN`.
 
     Args
     ----
     dataframes : list[DataFrame]
-        A list of dataframes
-    colname: str
-        The column name in the first dataframe
-    alias:
-        The alias of columns in the remaining dataframes (not including the first dataframe)
+        A list of dataframes.
+    colnames: str, list[str]
+        The names of columns.
+    mapping: function, dict, optional
+        Mapping correspondence.
 
     Returns
     -------
-    list[DataFrame]
-        A list of dataframes. The first output dataframe is the first input dataframe with column
-        `colname` remapped. The remaining output dataframes are the remaining input dataframes
-        with columns `colname` and `alias` remapped.
+    DataFrame, list[DataFrame]
+        A dataframe (if there is only one input dataframe) or a list of dataframes
+        with columns in `colnames` updated according to `mapping`.
     """
-    id_new, uniques = pd.factorize(dataframes[0][colname])
-    results = [dataframes[0].assign(**{colname: id_new})]
-    if len(dataframes) > 1 or alias is not None:
-        oid2nid = {oid: i for i, oid in enumerate(uniques)}
-    colnames = [colname]
-    if alias is not None:
-        colnames += alias
-    for df in dataframes[1:]:
+    if type(colnames) is str:
+        colnames = [colnames]
+    if mapping is None:
+        uniques = dataframes[0][colnames[0]].unique()
+        mapping = {oid: i for i, oid in enumerate(uniques)}
+    results = []
+    for df in dataframes:
         columns = {}
         for name in colnames:
             if name in df.columns:
-                columns[name] = df[name].map(oid2nid)
+                columns[name] = df[name].map(mapping)
         df = df.assign(**columns)
         results.append(df)
     if len(results) == 1:
@@ -212,16 +208,16 @@ def save_dataset(df_train, df_test, df_edges, df_loc, args):
 
     # update userId
     df_train, df_test, df_edges = update_id(
-        df_train, df_test, df_edges, colname='userId', alias=['followee', 'follower']
+        df_train, df_test, df_edges, colnames=['userId', 'followee', 'follower']
     )
 
     # update itemId
     if df_loc is None:
-        df_train, df_test = update_id(df_train, df_test, colname='itemId')
+        df_train, df_test = update_id(df_train, df_test, colnames='itemId')
     else:
         df_loc = df_loc[df_loc.itemId.isin(df_train.itemId.unique())]
         df_train, df_test, df_loc = update_id(
-            df_train, df_test, df_loc, colname='itemId'
+            df_train, df_test, df_loc, colnames='itemId'
         )
         df_loc = df_loc.sort_values('itemId')
 
@@ -266,7 +262,7 @@ def preprocess(df_clicks, df_edges, df_loc, args):
         df_clicks = df_clicks.sort_values(['userId', 'sessionId', 'timestamp'])
         sessionId = df_clicks.userId.astype(str) + '_' + df_clicks.sessionId.astype(str)
         df_clicks = df_clicks.assign(sessionId=sessionId)
-        df_clicks = update_id(df_clicks, colname='sessionId')
+        df_clicks = update_id(df_clicks, colnames='sessionId')
     else:
         df_clicks = group_sessions(df_clicks, args.interval)
     df_clicks = remove_immediate_repeats(df_clicks)

@@ -1,8 +1,8 @@
 import sys
-import argparse
+from srs.utils import argparse
 from pathlib import Path
 
-parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser = argparse.ArgumentParser()
 parser.add_argument(
     '--dataset',
     choices=['gowalla', 'delicious', 'foursquare'],
@@ -34,11 +34,11 @@ FILENAMES = {
     'delicious': [
         'user_taggedbookmarks-timestamps.dat',
         'user_contacts-timestamps.dat',
-        'raw_POIs.txt',
     ],
     'foursquare': [
         'dataset_WWW_Checkins_anonymized.txt',
         'dataset_WWW_friendship_new.txt',
+        'raw_POIs.txt',
     ],
 }
 
@@ -130,12 +130,12 @@ df_edges = df_edges[df_edges.follower != df_edges.followee]
 df_clicks = df_clicks.dropna()
 print('converting IDs to integers...')
 df_clicks, df_edges = update_id(
-    df_clicks, df_edges, colname='userId', alias=['followee', 'follower']
+    df_clicks, df_edges, colnames=['userId', 'followee', 'follower']
 )
 if df_loc is None:
-    df_clicks = update_id(df_clicks, colname='itemId')
+    df_clicks = update_id(df_clicks, colnames='itemId')
 else:
-    df_clicks, df_loc = update_id(df_clicks, df_loc, colname='itemId')
+    df_clicks, df_loc = update_id(df_clicks, df_loc, colnames='itemId')
 df_clicks = df_clicks.sort_values(['userId', 'timestamp'])
 np.random.seed(123456)
 preprocess(df_clicks, df_edges, df_loc, args)
