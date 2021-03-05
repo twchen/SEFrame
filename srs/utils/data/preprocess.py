@@ -252,6 +252,7 @@ def save_dataset(df_train, df_test, df_edges, df_loc, args):
     num_users = df_train.userId.nunique()
     num_items = df_train.itemId.nunique()
     with open(dataset_dir / 'stats.txt', 'w') as f:
+        f.write('num_users\tnum_items\tmax_len\n')
         f.write(f'{num_users}\t{num_items}\t{args.max_len}')
 
 
