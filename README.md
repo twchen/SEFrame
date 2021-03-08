@@ -63,12 +63,13 @@ You can train the models using your datasets. Each dataset should contain the fo
 You can see [datasets/delicious](datasets/delicious) for an example of the dataset.
 
 ## Citation
-If you use this code for your research, please cite our paper:
+If you use this code for your research, please cite our [paper](http://home.cse.ust.hk/~raywong/paper/wsdm21-SEFrame.pdf):
 ```
 @inproceedings{chen2021seframe,
    title="An Efficient and Effective Framework for Session-based Social Recommendation",
    author="Tianwen {Chen} and Raymond Chi-Wing {Wong}",
    booktitle="Proceedings of the Fourteenth ACM International Conference on Web Search and Data Mining (WSDM '21)",
+   pages="400--408",
    year="2021"
 }
 ```
